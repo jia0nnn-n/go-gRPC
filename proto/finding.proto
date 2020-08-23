@@ -1,0 +1,14 @@
+syntax = "proto3";
+package proto;
+
+service FindingService {
+  rpc ReportMissing (FindingRequest) returns (FindingResponse) {}
+}
+
+message FindingRequest {
+  string name = 1;
+}
+
+message FindingResponse {
+  string message = 1;
+}
