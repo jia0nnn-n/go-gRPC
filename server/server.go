@@ -9,16 +9,17 @@ import (
 	"google.golang.org/grpc"
 )
 
+const PORT = "1234"
+
 type FindingService struct{}
 
-func (s *FindingService) Finding(ctx context.Context, r *pb.FindingRequest) (*pb.FindingResponse, error) {
-	return &pb.FindingResponse{Message: "Server"}, nil
+func (f *FindingService) ReportMissing(ctx context.Context, req *pb.FindingRequest) (*pb.FindingResponse, error) {
+	return &pb.FindingResponse{Message: req.GetName() + "server"}, nil
 }
-
-const PORT = "8882"
 
 func main() {
 	server := grpc.NewServer()
+	pb.RegisterFindingServiceServer(server, &FindingService{})
 
 	lis, err := net.Listen("tcp", ":"+PORT)
 	if err != nil {

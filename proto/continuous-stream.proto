@@ -1,0 +1,23 @@
+syntax = "proto3";
+package proto;
+
+service ContinuousStreamService {
+  // server send, client receive
+  rpc ServerNotify (ContinuousStreamRequest) returns (stream ContinuousStreamResponse) {}
+  // client send, server receive
+  rpc ClientGiveIn (stream ContinuousStreamRequest) returns (ContinuousStreamResponse) {}
+  // two way conversation
+  rpc HasConversation (stream ContinuousStreamRequest) returns (stream ContinuousStreamResponse) {}
+}
+
+message ContinuousStreamChunk {
+    string name = 1;
+    int32 id = 2;
+}
+message ContinuousStreamRequest {
+    ContinuousStreamChunk chunk = 1;
+}
+
+message ContinuousStreamResponse {
+    ContinuousStreamChunk chunk = 1;
+}
