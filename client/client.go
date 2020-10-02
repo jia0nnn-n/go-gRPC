@@ -6,12 +6,17 @@ import (
 
 	pb "../proto"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 const PORT = "1234"
 
 func main() {
-	conn, err := grpc.Dial(":"+PORT, grpc.WithInsecure())
+	c, err := credentials.NewClientTLSFromFile("../conf/cert.pem", "localhost")
+	if err != nil {
+		log.Fatalf("credentials.NewClientTLSFromFile Error: %v", err)
+	}
+	conn, err := grpc.Dial(":"+PORT, grpc.WithTransportCredentials(c))
 	if err != nil {
 		log.Fatalf("grpc.Dial err %s", err)
 	}
@@ -23,7 +28,7 @@ func main() {
 	})
 
 	if err != nil {
-		log.Fatalf("Client finding error")
+		log.Fatal(err)
 	}
 	log.Printf("response is %s", res.GetMessage())
 }

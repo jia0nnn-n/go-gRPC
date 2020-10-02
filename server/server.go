@@ -7,6 +7,7 @@ import (
 
 	pb "../proto"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 const PORT = "1234"
@@ -18,7 +19,11 @@ func (f *FindingService) ReportMissing(ctx context.Context, req *pb.FindingReque
 }
 
 func main() {
-	server := grpc.NewServer()
+	c, err := credentials.NewServerTLSFromFile("../conf/cert.pem", "../conf/key.pem")
+	if err != nil {
+		log.Fatalf("credentials.NewServerTLSFromFile Error: %v", err)
+	}
+	server := grpc.NewServer(grpc.Creds(c))
 	pb.RegisterFindingServiceServer(server, &FindingService{})
 
 	lis, err := net.Listen("tcp", ":"+PORT)
